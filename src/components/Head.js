@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 import "../App.css";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserAlt } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
+import { YOUTUBE_SEARCH_API } from "../utils/constants";
 
 const Head = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    const timer = setTimeout(() => getSearchSuggestions(), 200);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [searchQuery]);
+
+  const getSearchSuggestions = async () => {
+    console.log(searchQuery);
+    const data = await fetch(YOUTUBE_SEARCH_API + searchQuery);
+    const json = await data.json();
+    console.log("json data isss", json[1]);
+  };
+
   const dispatch = useDispatch();
 
   const handleSidebarToggle = () => {
@@ -31,8 +49,19 @@ const Head = () => {
           type="text"
           placeholder="Search"
           className="border-2 border-gray-400 w-1/2 p-1.5 rounded-l-full indent-4"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
         <HiOutlineSearch className="w-auto h-10 p-2.5 bg-gray-200 rounded-r-full" />
+        <div className="fixed m-96 p-96">
+          <ul>
+            <li>Iphone</li>
+            <li>Iphone</li>
+            <li>Iphone</li>
+            <li>Iphone</li>
+            <li>Iphone</li>
+          </ul>
+        </div>
       </div>
 
       <div className="grid-rows-2 flex items-center">
