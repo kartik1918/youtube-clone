@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 import "../App.css";
@@ -10,6 +10,7 @@ import { YOUTUBE_SEARCH_API } from "../utils/constants";
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false)
 
   useEffect(() => {
     // Debouncing with 200ms using setTimeout
@@ -37,7 +38,7 @@ const Head = () => {
 
   return (
     <>
-      <div className="grid grid-flow-col shadow-lg">
+      <div className="grid grid-flow-col shadow-lg relative">
         <div className="col-span-1 flex items-center px-4 gap-4">
           <GiHamburgerMenu
             className="cursor-pointer"
@@ -56,10 +57,12 @@ const Head = () => {
             className="border-2 border-gray-400 w-1/2 p-1.5 rounded-l-full indent-4"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onBlur={() => setShowSuggestions(false)}
           />
           <HiOutlineSearch className="w-auto h-10 p-2.5 bg-gray-100 rounded-r-full border border-gray-400" />
-          {searchQuery && (
-            <div className="fixed top-14 left-[34rem] w-[34.5rem] shadow-lg rounded-lg border border-gray-100 bg-white py-2 px-2">
+          {searchQuery && showSuggestions && (
+            <div className="absolute top-14 left-[34rem] w-[34.5rem] shadow-lg rounded-lg border border-gray-100 bg-white py-2 px-2">
               <ul>
                 {suggestions.map((s) => (
                   <li key={s} className="py-2 px-3 shadow-sm hover:bg-gray-100">
