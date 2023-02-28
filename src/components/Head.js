@@ -1,21 +1,40 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 import "../App.css";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserAlt } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
 import { YOUTUBE_SEARCH_API } from "../utils/constants";
+import { cacheResults } from "../utils/searchSlice";
 
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchCache = useSelector((store) => store.search);
+
+  /**
+   * searchCache = {
+   *  "iphone": ["iphone 11", "iphone 14"]
+   * }
+   *
+   * searchQuery: iphone
+   *
+   */
 
   useEffect(() => {
     // Debouncing with 200ms using setTimeout
 
-    const timer = setTimeout(() => getSearchSuggestions(), 200);
+    const timer = setTimeout(() => {
+      // checking if searchQuery exists in cache
+      console.log(searchCache)
+      if (searchCache[searchQuery]) {
+        setSuggestions(searchCache[searchQuery]);
+      } else {
+        getSearchSuggestions();
+      }
+    }, 200);
 
     return () => {
       clearTimeout(timer);
@@ -28,6 +47,13 @@ const Head = () => {
     const json = await data.json();
     console.log("json data isss", json[1]);
     setSuggestions(json[1]);
+
+    // cache the results
+    dispatch(
+      cacheResults({
+        [searchQuery]: json[1],
+      })
+    );
   };
 
   const dispatch = useDispatch();
