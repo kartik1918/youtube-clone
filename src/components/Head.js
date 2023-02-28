@@ -6,6 +6,7 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { FaUserAlt } from "react-icons/fa";
 import { HiOutlineSearch } from "react-icons/hi";
 import { YOUTUBE_SEARCH_API } from "../utils/constants";
+import logo from "../assets/imgs/vimo_logo.png"
 import { cacheResults } from "../utils/searchSlice";
 
 const Head = () => {
@@ -71,8 +72,8 @@ const Head = () => {
             onClick={() => handleSidebarToggle()}
           />
           <img
-            src="https://logos-world.net/wp-content/uploads/2020/04/YouTube-Logo.png"
-            className="w-28"
+            src={logo}
+            className="w-20 h-20"
           />
         </div>
 
